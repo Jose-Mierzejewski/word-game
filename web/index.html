@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <title>Word Freaks</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="theme_toggle.css">
+  </head>
+
+  <body>
+
+    <div id="layout">
+      <header>
+        <section class="header-section">
+          <div class="header-title">
+            <h1>Word Freaks</h1>
+          </div>
+          
+          <menu class="header-menu">
+            <span>button</span>
+            <span>button</span>
+            <span>button</span>
+          </menu>
+        </section>
+        
+      </header>
+      
+      <main>
+        <section id="main-section" aria-label="Game">
+          <h2 class="prompt">Which is the more common word?</h2>
+
+          <div id="word-pair" class="both-words-area">
+
+            <section class="word-area">
+              <button class="answer-button" id="left-word" type="button">
+                <span class="word-text"></span>
+              </button>
+              
+              <section id="left-definition-section" class="definition">
+                
+              </section>
+            </section>
+
+            <section id="middle-section">
+              <button id="definition-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg></button></section>
+            
+            <section class="word-area">
+              <button class="answer-button" id="right-word" type="button">
+                <span class="word-text"></span>
+              </button>
+              
+              <section id="right-definition-section" class="definition">
+
+              </section>
+            </section>
+          </div>
+
+
+
+          <section id="score" aria-label="Score">
+            <p>Streak: <span id="streak">0</span></p>
+            <p>Best: <span id="best">0</span></p>
+          </section>
+          
+          
+        </section>
+
+      </main>
+
+
+      <footer>
+        <hr>
+        <p>Made by <b>Emilio Mierzejewski</b></p>
+        
+        <nav id="navigation">
+          <ul>
+            <!-- TODO change links -->
+            <li><a class="nav-link" href="https://youtube.com">link 1</a></li>
+            <li><a class="nav-link" href="test.com">Another place</a></li>
+            <li><a class="nav-link" href="">LinkdIn</a></li>
+            <li><a class="nav-link" href="">YouTube</a></li>
+          </ul>
+        </nav>
+
+      </footer>
+
+    </div>
+  
+  <script src="main.js"></script>
+  <script src="theme-toggle.js"></script>
+  </body>
+</html>

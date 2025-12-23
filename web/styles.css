@@ -1,0 +1,220 @@
+:root {
+  --bg-color: #0A1B27;
+  --primary-color: #D71920;
+  --text-color: #FFFBFF;
+
+  --secondary-color: #786f52;
+  --tertiary-color: #5e5741;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html, body {
+  height: 98%;
+}
+
+div {
+  vertical-align: baseline;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+
+/* Center the game container using margin */
+#layout {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  position: relative;
+  height: 100%;
+}
+
+#main-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
+/* Header / footer */
+header {
+  width: 100%;
+}
+
+header h1 {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.header-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+    justify-content: space-around;
+}
+
+footer {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  opacity: 0.8;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+}
+
+#navigation {
+  width: 100%;
+}
+#navigation ul {
+    list-style: none;
+    display: flex;
+    vertical-align: middle;
+    align-content: stretch;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--text-color);
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.nav-link:visited {
+  color: var(--text-color);
+}
+
+/* Main content */
+main {
+  margin-top: 1rem;
+  height: 750px;
+}
+
+.prompt {
+  margin-top: 100px;
+  margin-bottom: 50px;
+  font-size: 3rem;
+}
+
+main h2 {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+/* word buttons */
+#word-pair {
+    display: flex;
+    margin-top: 0.5rem;
+    height: 10rem;
+    justify-content: space-evenly;
+    flex-direction: row;
+}
+
+/* Buttons styled as cards */
+.answer-button {
+  border: none;
+  border-radius: 0.9rem;
+  padding: 1.5rem 1.25rem;
+  background: var(--primary-color);
+  color: inherit;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1.5rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+  transition:
+    transform 120ms ease-out,
+    box-shadow 120ms ease-out,
+    background-color 120ms ease-out;
+  width: 23rem;
+}
+
+#middle-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#definition-button {
+  height: 2rem;
+  width: 2rem;
+}
+
+.both-words-area {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.word-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.answer-button:hover {
+  background: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.45);
+}
+
+.answer-button:focus-visible {
+  outline: 3px solid #9FA2B2;
+  outline-offset: 3px;
+}
+
+.answer-button:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+  background: var(--tertiary-color);
+}
+
+/* ============= Score line ======== */
+#score {
+  margin-top: 5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--primary-color);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.95rem;
+}
+
+#score p {
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  #score {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+/* =========== Definitions overlay ============*/
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  z-index: 9999;
+}

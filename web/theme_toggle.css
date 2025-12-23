@@ -1,0 +1,87 @@
+:root {
+  --color-A: #0A1B27;
+  --color-B: #FFFBFF;
+  --primary-color: #D71920;
+
+}
+
+
+/* Themes */
+body {
+  background: var(--color-A);
+  color: var(--color-B);
+}
+html.dark body {
+  background: var(--color-B);
+  color: var(--color-A);
+}
+/* Theme Toggle UI */
+.theme-toggle {
+  appearance: none;
+  background-color: var(--color-A);
+  border-style: solid; 
+  border-color: var(--color-B);
+  cursor: pointer; 
+  border: 1px solid;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  inline-size: 3.5rem;
+  block-size: 20px;
+  padding: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: background-color .5s ease-in-out, border-color .5s ease-in-out;
+  position: fixed;
+  inset-block-start: 1rem;
+  inset-inline-end: 1rem;
+  text-indent: 100%;
+}
+.theme-toggle:focus {
+  outline-offset: 4px;
+  outline: 4px solid Mark;
+}
+.theme-toggle::before {
+  content: "Dark \a0\a0 Light";
+  font: 11px / 1.35 system-ui, sans-serif;
+  position: absolute;
+  color: var(--primary-color);
+  inset-inline: 50%;
+  inset-block-start: 1px;
+  white-space: no-wrap;
+  width: max-content;
+  transition: color .5s ease-in-out, transform .5s ease-in-out;
+  transform: translateX(-2.9ch);
+  text-indent: 0;
+}
+.theme-toggle[aria-pressed="true"]::before {
+  color: Field;
+  transform: translateX(-6ch);
+}
+.theme-toggle::after {
+  content: " ";
+  background: var(--color-B);
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: .5rem;
+  transform: translateX(1.20rem);
+  transition: transform .5s ease-in-out,
+      background-color .5s ease-in-out;
+  position: absolute;
+}
+.theme-toggle[aria-pressed="true"] {
+  background-color: var(--color-B);
+  border-color: var(---color-A);
+}
+.theme-toggle[aria-pressed="true"]::after {
+  background-color: var(--color-A);
+  transform: translateX(-1.24rem);
+}
+@media (prefers-reduced-motion: reduce) {
+  html,
+  .theme-toggle,
+  .theme-toggle::after {
+    transition-duration: 0ms;
+  }
+}

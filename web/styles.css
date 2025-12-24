@@ -33,13 +33,15 @@ body {
   margin: 2rem auto;
   padding: 0 1rem;
   position: relative;
-  height: 100%;
+  min-height: 100;
 }
 
 #main-section {
   display: flex;
   flex-direction: column;
   gap: 2em;
+  transition: 250ms;
+  interpolate-size: allow-keywords;
 }
 
 /* Header / footer */
@@ -66,7 +68,7 @@ footer {
   margin-bottom: 2rem;
   text-align: center;
   opacity: 0.8;
-  position: absolute;
+  position: static;
   bottom: 0;
   width: 100%;
   padding: 20px;
@@ -101,13 +103,16 @@ footer {
 /* Main content */
 main {
   margin-top: 1rem;
-  height: 750px;
+  min-height: 750px;   /* optional */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .prompt {
   margin-top: 100px;
   margin-bottom: 50px;
-  font-size: 3rem;
+  font-size: 2rem;
 }
 
 main h2 {
@@ -120,10 +125,11 @@ main h2 {
 /* word buttons */
 #word-pair {
     display: flex;
+    gap: 1rem;
+    align-items: flex-start;
     margin-top: 0.5rem;
-    height: 10rem;
     justify-content: space-evenly;
-    flex-direction: row;
+    min-height: 15rem;
 }
 
 /* Buttons styled as cards */
@@ -141,7 +147,7 @@ main h2 {
     transform 120ms ease-out,
     box-shadow 120ms ease-out,
     background-color 120ms ease-out;
-  width: 23rem;
+  width: 100%;
 }
 
 #middle-section {
@@ -163,8 +169,10 @@ main h2 {
 }
 
 .word-area {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: stretch;
 }
 
 .answer-button:hover {
@@ -186,7 +194,6 @@ main h2 {
 
 /* ============= Score line ======== */
 #score {
-  margin-top: 5rem;
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
   background: var(--primary-color);
@@ -217,4 +224,110 @@ main h2 {
   place-items: center;
   padding: 1rem;
   z-index: 9999;
+}
+
+
+/* =========== COPYING STUFF ============= */
+/* Middle definition button */
+#middle-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#definition-button {
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.04);
+  color: inherit;
+  border-radius: 999px;
+  padding: 0.55rem;
+  cursor: pointer;
+  transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease;
+}
+
+#definition-button:hover {
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-1px);
+}
+
+#definition-button:active {
+  transform: translateY(0);
+}
+
+/* Definition drawer container (starts closed) */
+.definition {
+  margin-top: 0.6rem;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.03);
+  border-radius: 0.9rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  /* animation setup */
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: max-height 260ms ease, opacity 200ms ease, transform 200ms ease;
+
+  /* keeps it from taking space while closed */
+  padding: 0 0.9rem;
+}
+
+.definition * {
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Open state */
+.definition.is-open {
+  max-height: 220px; /* adjust as you like */
+  opacity: 1;
+  transform: translateY(0);
+  padding: 0.75rem 0.9rem;
+}
+
+/* The internal scrolling area */
+.definition .def-scroll {
+  max-height: 160px;     /* must be <= open max-height minus header area */
+  overflow: auto;
+  padding-right: 0.25rem;
+}
+
+/* Optional: tabs / part-of-speech pills */
+.definition .pos-tabs {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  margin-bottom: 0.6rem;
+}
+
+.definition .pos-tab {
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.04);
+  color: inherit;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.definition .pos-tab[aria-selected="true"] {
+  background: rgba(56,189,248,0.16);
+  border-color: rgba(56,189,248,0.55);
+}
+
+/* Definition list */
+.definition ol {
+  margin-left: 1.2rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.definition li {
+  line-height: 1.35;
+  font-size: 0.95rem;
+  opacity: 0.95;
 }

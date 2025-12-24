@@ -5,9 +5,6 @@ export function handleGuess(state, guess, other){
       } else {
         incorrectGuess(state);
       }
-  document.getElementById("streak").innerText = state.streak;
-  document.getElementById("best").innerText = state.best;
-
   setupState(state);
 }
 
@@ -50,13 +47,31 @@ function correctGuess(state){
   if (state.best < state.streak){
     state.best = state.streak;
   }
+  updateScore(state);
 }
 
 function incorrectGuess(state){
   console.log("Incorrect");
   state.streak = 0;
+  updateScore(state);
 }
 
+function updateScore(state){
+  let $scoreboard = state.$scoreboard;
+  let $streak = $scoreboard.querySelector("#streak");
+  let $best = $scoreboard.querySelector("#best");
+  
+  $streak.classList.remove("loss_pop", "gain_pop")
+  void $streak.offsetWidth; 
+  if (state.streak === 0) {
+    $streak.classList.add("loss_pop")
+  } else{
+    $streak.classList.add("gain_pop")
+  }
+
+  $streak.querySelector("#streak-num").innerText = state.streak;
+  $best.querySelector("#best-num").innerText = state.best;
+}
 
 export async function definitionFunc(state){
   state.defsOpen = !state.defsOpen;

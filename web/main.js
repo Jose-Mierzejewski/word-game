@@ -8,6 +8,7 @@ state.left = document.getElementById("left-word");
 state.right = document.getElementById("right-word");
 state.left.$leftDef = document.getElementById("left-definition-section");
 state.right.$rightDef = document.getElementById("right-definition-section");
+state.$scoreboard = document.getElementById("score");
 
 async function init(){
     state.WORDS = await loadWords(state, pathToWordsJson);

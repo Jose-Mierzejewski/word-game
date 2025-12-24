@@ -331,3 +331,25 @@ main h2 {
   font-size: 0.95rem;
   opacity: 0.95;
 }
+
+/* ===== score animations ====== */
+@keyframes loseStreakAnimation {
+  0% {color: black; font-weight: 900}
+  100% {color: var(--text-color); font-weight: 400}
+}
+
+@keyframes gainStreakAnimation {
+  0% {color: green; font-weight: 900; filter: brightness(1); transform: scale(1)}
+  40% {filter: brightness(1.3); transform: scale(1.1)}
+  100% {color: var(--text-color); font-weight: 400; transform: scale(1)}
+}
+
+.loss_pop {
+  animation-name: loseStreakAnimation;
+  animation-duration: 500ms;
+}
+
+.gain_pop {
+  animation-name: gainStreakAnimation;
+  animation-duration: 500ms;
+}

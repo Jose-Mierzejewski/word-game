@@ -2,10 +2,11 @@
 export function handleGuess(state, guess, other){
   if (guess.freq >= other.freq){
         correctGuess(state);
-      } else {
+  } else {
         incorrectGuess(state);
-      }
-  setupState(state);
+  }
+
+  animateElementOntoAnother(state, state.right.$area, state.left.$area);
 }
 
 export async function setupState(state){
@@ -22,6 +23,15 @@ function renderButtons(state){
   state.right.innerText = state.right.wordObj.text;
 }
 
+export async function initialSetup(state){
+  state.left.wordObj = pickRandomWord(state);
+  state.right.wordObj = pickRandomWord(state);
+  state.left.innerText = state.left.wordObj.text;
+  state.right.innerText = state.right.wordObj.text;
+}
+
+
+
 function pickRandomWord(state) {
   let w; 
   do {
@@ -29,16 +39,6 @@ function pickRandomWord(state) {
   } while (w.text === state.left.wordObj.text 
             || w.text === state.right.wordObj.text);
   return w;
-}
-
-export async function getMeanings(word) {
-  try {
-    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-    const data = await response.json();
-    return data[0].meanings;
-  } catch (error) {
-    console.error('Error fetching definition:', error);
-  }
 }
 
 function correctGuess(state){
@@ -61,10 +61,10 @@ function updateScore(state){
   let $streak = $scoreboard.querySelector("#streak");
   let $best = $scoreboard.querySelector("#best");
   
-  $streak.classList.remove("loss_pop", "gain_pop")
+  $streak.classList.remove("loss_pop", "gain_pop", "score_shake")
   void $streak.offsetWidth; 
   if (state.streak === 0) {
-    $streak.classList.add("loss_pop")
+    $streak.classList.add("loss_pop", "score_shake")
   } else{
     $streak.classList.add("gain_pop")
   }
@@ -162,4 +162,58 @@ async function fetchDefinitions(word) {
   } catch (error) {
     console.error('Error fetching definition:', error);
   }
+}
+
+/** TODO refactor this. Name is now misleading
+ * Animates the right object onto the left object
+*/
+async function animateElementOntoAnother(state, rightElement, leftElement){
+  const left = leftElement.getBoundingClientRect();
+  const right = rightElement.getBoundingClientRect();
+  
+  // LAST
+  const deltaX = left.left - right.left;
+  const deltaY = left.top - right.top;
+
+  declareAnimating(state);
+  // Animate right button onto left button
+  await rightElement.animate([
+      {offset: 0, transform: `translateX(0px)`, opacity: 1},
+      {offset: 1, transform: `translate(${deltaX}px, ${deltaY}px)`}
+    ], {
+      duration: 1250,
+      iterations: 1,
+      easing: 'ease-in-out'
+    }).finished;  
+  
+  setLeftAsRight(state);
+  state.right.wordObj = pickRandomWord(state);
+  renderButtons(state);
+
+    // Animate new button fade-in
+  await rightElement.animate([
+    {offset: 0, opacity: 0},
+    {offset: 1, opacity: 1}
+    ], {
+      duration: 1000,
+      iterations: 1,
+      // fill: "forwards",
+  }).finished;
+
+  declareNotAnimating(state);
+}
+
+function setLeftAsRight(state){
+  state.left.wordObj = state.right.wordObj;
+}
+function declareAnimating(state){
+  state.right.$area.classList.add("animating");
+  state.left.$area.classList.add("animating");
+  state.$defButton.classList.add("animating");
+}
+
+function declareNotAnimating(state){
+  state.right.$area.classList.remove("animating");
+  state.left.$area.classList.remove("animating");
+  state.$defButton.classList.remove("animating");
 }

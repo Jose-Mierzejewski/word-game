@@ -147,7 +147,7 @@ main h2 {
 
   will-change: transform;
   transition:
-    transform 2s ease-in-out,
+    transform .3s ease-in-out,
     box-shadow 120ms ease-out,
     background-color 240ms ease;
   width: 100%;
@@ -155,7 +155,7 @@ main h2 {
 
 .answer-button:hover {
   background: var(--secondary-color);
-  transform: translateY(-2px);
+  transform: translateY(-5px);
   box-shadow: 0 14px 24px rgba(0, 0, 0, 0.45);
 }
 
@@ -264,7 +264,7 @@ main h2 {
   max-height: 0;
   opacity: 0;
   transform: translateY(-4px);
-  transition: max-height 260ms ease, opacity 200ms ease, transform 200ms ease;
+  transition: max-height 500ms ease, opacity 200ms ease, transform 200ms ease;
   padding: 0 0.9rem;
 }
 
@@ -367,5 +367,4 @@ main h2 {
 
 .animating > *, .animating {
   pointer-events: none;
-  /* background: var(--tertiary-color); */
 }

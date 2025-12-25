@@ -1,12 +1,31 @@
+export async function initialSetup(state){
+  state.left.wordObj = pickRandomWord(state);
+  state.right.wordObj = pickRandomWord(state);
+  state.left.innerText = state.left.wordObj.text;
+  state.right.innerText = state.right.wordObj.text;
+}
 
-export function handleGuess(state, guess, other){
+export async function handleGuess(state, guess, other){
+  
+  await declareAnimating(state);
+  await closeDefs(state);
   if (guess.freq >= other.freq){
-        correctGuess(state);
+        await correctGuess(state);
   } else {
-        incorrectGuess(state);
+        await incorrectGuess(state);
   }
 
-  animateElementOntoAnother(state, state.right.$area, state.left.$area);
+  await animateElementOntoAnother(state, state.right.$area, state.left.$area);
+  declareNotAnimating(state);
+}
+
+async function closeDefs(state){
+  if (state.defsOpen){
+    state.left.$leftDef.classList.remove("is-open");
+    state.right.$rightDef.classList.remove("is-open");  
+    
+    state.defsOpen = !state.defsOpen;
+  }
 }
 
 export async function setupState(state){
@@ -23,12 +42,6 @@ function renderButtons(state){
   state.right.innerText = state.right.wordObj.text;
 }
 
-export async function initialSetup(state){
-  state.left.wordObj = pickRandomWord(state);
-  state.right.wordObj = pickRandomWord(state);
-  state.left.innerText = state.left.wordObj.text;
-  state.right.innerText = state.right.wordObj.text;
-}
 
 
 
@@ -41,7 +54,7 @@ function pickRandomWord(state) {
   return w;
 }
 
-function correctGuess(state){
+async function correctGuess(state){
   console.log("Correct");
   state.streak++;
   if (state.best < state.streak){
@@ -50,7 +63,7 @@ function correctGuess(state){
   updateScore(state);
 }
 
-function incorrectGuess(state){
+async function incorrectGuess(state){
   console.log("Incorrect");
   state.streak = 0;
   updateScore(state);
@@ -175,13 +188,12 @@ async function animateElementOntoAnother(state, rightElement, leftElement){
   const deltaX = left.left - right.left;
   const deltaY = left.top - right.top;
 
-  declareAnimating(state);
   // Animate right button onto left button
   await rightElement.animate([
       {offset: 0, transform: `translateX(0px)`, opacity: 1},
       {offset: 1, transform: `translate(${deltaX}px, ${deltaY}px)`}
     ], {
-      duration: 1250,
+      duration: 1500,
       iterations: 1,
       easing: 'ease-in-out'
     }).finished;  
@@ -195,24 +207,23 @@ async function animateElementOntoAnother(state, rightElement, leftElement){
     {offset: 0, opacity: 0},
     {offset: 1, opacity: 1}
     ], {
-      duration: 1000,
+      duration: 500,
       iterations: 1,
       // fill: "forwards",
   }).finished;
 
-  declareNotAnimating(state);
 }
 
 function setLeftAsRight(state){
   state.left.wordObj = state.right.wordObj;
 }
-function declareAnimating(state){
+async function declareAnimating(state){
   state.right.$area.classList.add("animating");
   state.left.$area.classList.add("animating");
   state.$defButton.classList.add("animating");
 }
 
-function declareNotAnimating(state){
+async function declareNotAnimating(state){
   state.right.$area.classList.remove("animating");
   state.left.$area.classList.remove("animating");
   state.$defButton.classList.remove("animating");

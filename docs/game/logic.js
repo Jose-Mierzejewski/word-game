@@ -1,4 +1,5 @@
-const SERVERPATH = "https://word-freak.onrender.com";
+// const SERVERPATH = "https://word-freak.onrender.com";
+const SERVERPATH = "http://localhost:3000"
 
 export async function initialSetup(state){
   await resetButton(state, state.left);
@@ -6,50 +7,44 @@ export async function initialSetup(state){
 }
 
 async function resetButton(state, button){
-  return pickRandomWord(state).then(wordObj => {
-    setButton(button, wordObj);
+  return pickRandomWord(state).then(word => {
+    setButton(button, word);
   });
 }
-function setButton(stateButton, wordObj){
-  stateButton.wordObj = wordObj;
-  stateButton.innerText = wordObj['text'];
+function pickRandomWord(state) {
+  return fetch(SERVERPATH + "/api/word", {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({gameid: state.gameid})
+  })
+    .then(response => {return response.text()});
 }
 
+function setButton(button, word){
+  button.word = word;
+  button.innerText = word;
+}
 
 export async function handleGuess(state, guess, other){
   await declareAnimating(state);
   await closeDefs(state);
-  if (guess.freq >= other.freq){
-        await correctGuess(state);
-  } else {
-        await incorrectGuess(state);
-  }
+
+  await fetch(SERVERPATH + "/api/guess", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json' },
+                    body: JSON.stringify({ gameid: state.gameid, guess: guess})
+  });
+
+  await updateState(state);
+  updateScoreboard(state);
 
   await animateRightOntoLeftElement(state, state.right.$area, state.left.$area);
+
   declareNotAnimating(state);
 }
 
-function pickRandomWord(state) {
-  return fetch(SERVERPATH + "/api/wordObj")
-    .then(response => {return response.json()});
-}
 
-async function correctGuess(state){
-  console.log("Correct");
-  state.streak++;
-  if (state.best < state.streak){
-    state.best = state.streak;
-  }
-  updateScore(state);
-}
-
-async function incorrectGuess(state){
-  console.log("Incorrect");
-  state.streak = 0;
-  updateScore(state);
-}
-
-function updateScore(state){
+function updateScoreboard(state){
   let $scoreboard = state.$scoreboard;
   let $streak = $scoreboard.querySelector("#streak");
   let $best = $scoreboard.querySelector("#best");
@@ -66,6 +61,19 @@ function updateScore(state){
   $best.querySelector("#best-num").innerText = state.best;
 }
 
+async function updateState(state){
+  const response = await getServerState(state);
+  const data = await response.json();
+  state.streak = data.streak;
+  state.best = data.best;
+  state.left.word = data.left;
+  state.right.word = data.right;
+}
+
+async function getServerState(state){
+  return await fetch(SERVERPATH + `/api/state?gameid=${state.gameid}`);
+}
+
 export async function definitionFunc(state){
   state.defsOpen = !state.defsOpen;
 
@@ -76,8 +84,8 @@ export async function definitionFunc(state){
     if (!state.defsOpen) return;
 
     await Promise.all([
-      loadAndRenderDefinition(state, state.left.wordObj.text, state.left.$leftDef),
-      loadAndRenderDefinition(state, state.right.wordObj.text, state.right.$rightDef),
+      loadAndRenderDefinition(state, state.left.word, state.left.$leftDef),
+      loadAndRenderDefinition(state, state.right.word, state.right.$rightDef),
     ]);
 }
 async function closeDefs(state){
@@ -202,8 +210,7 @@ async function animateRightOntoLeftElement(state, rightElement, leftElement){
 }
 
 function setLeftAsRight(state){
-  state.left.wordObj = state.right.wordObj;
-  state.left.innerText = state.left.wordObj['text'];
+  setButton(state.left, state.right.word);
 }
 
 async function declareAnimating(state){

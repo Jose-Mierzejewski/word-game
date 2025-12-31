@@ -4,10 +4,9 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const app = express();
-
+const PORT = process.env.PORT || 3000;
 
 const WORDS_PATH = "../data/word-freqs.json"
-const PORT = 3000;
 app.use(cors());
 
 // Load words
@@ -24,5 +23,5 @@ app.get("/", (req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server listening (port ${PORT})`);
 });

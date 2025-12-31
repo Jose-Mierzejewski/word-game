@@ -75,7 +75,6 @@ export async function definitionFunc(state){
 
     if (!state.defsOpen) return;
 
-    // If opening: load + render both
     await Promise.all([
       loadAndRenderDefinition(state, state.left.wordObj.text, state.left.$leftDef),
       loadAndRenderDefinition(state, state.right.wordObj.text, state.right.$rightDef),
@@ -164,9 +163,6 @@ async function fetchDefinitions(word) {
   }
 }
 
-/** TODO refactor this. Name is now misleading
- * Animates the right object onto the left object
-*/
 async function animateRightOntoLeftElement(state, rightElement, leftElement){
   const left = leftElement.getBoundingClientRect();
   const right = rightElement.getBoundingClientRect();
@@ -195,14 +191,15 @@ async function animateRightOntoLeftElement(state, rightElement, leftElement){
     ], {
       duration: 500,
       iterations: 1,
-      // fill: "forwards",
   }).finished;
 
 }
 
 function setLeftAsRight(state){
   state.left.wordObj = state.right.wordObj;
+  state.left.innerText = state.left.wordObj['text'];
 }
+
 async function declareAnimating(state){
   state.right.$area.classList.add("animating");
   state.left.$area.classList.add("animating");

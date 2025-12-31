@@ -1,12 +1,22 @@
+const SERVERPATH = "http://localhost:3000";
+
 export async function initialSetup(state){
-  state.left.wordObj = pickRandomWord(state);
-  state.right.wordObj = pickRandomWord(state);
-  state.left.innerText = state.left.wordObj.text;
-  state.right.innerText = state.right.wordObj.text;
+  await resetButton(state, state.left);
+  await resetButton(state, state.right);
 }
 
+async function resetButton(state, button){
+  pickRandomWord(state).then(wordObj => {
+    setButton(button, wordObj);
+  });
+}
+function setButton(stateButton, wordObj){
+  stateButton.wordObj = wordObj;
+  stateButton.innerText = wordObj['text'];
+}
+
+
 export async function handleGuess(state, guess, other){
-  
   await declareAnimating(state);
   await closeDefs(state);
   if (guess.freq >= other.freq){
@@ -15,43 +25,13 @@ export async function handleGuess(state, guess, other){
         await incorrectGuess(state);
   }
 
-  await animateElementOntoAnother(state, state.right.$area, state.left.$area);
+  await animateRightOntoLeftElement(state, state.right.$area, state.left.$area);
   declareNotAnimating(state);
 }
 
-async function closeDefs(state){
-  if (state.defsOpen){
-    state.left.$leftDef.classList.remove("is-open");
-    state.right.$rightDef.classList.remove("is-open");  
-    
-    state.defsOpen = !state.defsOpen;
-  }
-}
-
-export async function setupState(state){
-  state.left.wordObj = pickRandomWord(state);
-  state.right.wordObj = pickRandomWord(state);
-  renderButtons(state);
-  if (state.defsOpen){
-    definitionFunc(state);
-  }
-}
-
-function renderButtons(state){
-  state.left.innerText = state.left.wordObj.text;
-  state.right.innerText = state.right.wordObj.text;
-}
-
-
-
-
 function pickRandomWord(state) {
-  let w; 
-  do {
-    w = state.WORDS[Math.floor(Math.random() * state.WORDS.length)];
-  } while (w.text === state.left.wordObj.text 
-            || w.text === state.right.wordObj.text);
-  return w;
+  return fetch(SERVERPATH + "/api/wordObj")
+    .then(response => {return response.json()});
 }
 
 async function correctGuess(state){
@@ -101,7 +81,14 @@ export async function definitionFunc(state){
       loadAndRenderDefinition(state, state.right.wordObj.text, state.right.$rightDef),
     ]);
 }
-
+async function closeDefs(state){
+  if (state.defsOpen){
+    state.left.$leftDef.classList.remove("is-open");
+    state.right.$rightDef.classList.remove("is-open");  
+    
+    state.defsOpen = !state.defsOpen;
+  }
+}
 async function loadAndRenderDefinition(state, word, container) {
   container.innerHTML = `<div style="opacity:.8;">Loading…</div>`;
 
@@ -180,7 +167,7 @@ async function fetchDefinitions(word) {
 /** TODO refactor this. Name is now misleading
  * Animates the right object onto the left object
 */
-async function animateElementOntoAnother(state, rightElement, leftElement){
+async function animateRightOntoLeftElement(state, rightElement, leftElement){
   const left = leftElement.getBoundingClientRect();
   const right = rightElement.getBoundingClientRect();
   
@@ -199,8 +186,7 @@ async function animateElementOntoAnother(state, rightElement, leftElement){
     }).finished;  
   
   setLeftAsRight(state);
-  state.right.wordObj = pickRandomWord(state);
-  renderButtons(state);
+  await resetButton(state, state.right);
 
     // Animate new button fade-in
   await rightElement.animate([

@@ -10,7 +10,7 @@ const state = {
   $defButton: null,
 };
 
-export async function prepareState(pathToWordsJson){
+export async function prepareState(){
   state.left = document.getElementById("left-word-button");
   state.right = document.getElementById("right-word-button");
   state.left.$leftDef = document.getElementById("left-definition-section");
@@ -24,15 +24,5 @@ export async function prepareState(pathToWordsJson){
   state.definitionCache = new Map(); // word -> entry
   state.$defButton = document.getElementById("definition-button");
   state.$defButton.addEventListener("click", () => definitionFunc(state));
-
-  state.WORDS = await loadWords(state, pathToWordsJson);
-  state.left.wordObj = state.WORDS[0];
-  state.right.wordObj = state.WORDS[0];
   return state;
-}
-
-async function loadWords(state, path) {
-  const res = await fetch(path);
-  console.log("Loaded words: ", state.WORDS.length);
-  return await res.json();
 }

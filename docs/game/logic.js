@@ -6,7 +6,7 @@ export async function initialSetup(state){
 }
 
 async function resetButton(state, button){
-  pickRandomWord(state).then(wordObj => {
+  return pickRandomWord(state).then(wordObj => {
     setButton(button, wordObj);
   });
 }
@@ -176,13 +176,19 @@ async function animateRightOntoLeftElement(state, rightElement, leftElement){
       {offset: 0, transform: `translateX(0px)`, opacity: 1},
       {offset: 1, transform: `translate(${deltaX}px, ${deltaY}px)`}
     ], {
-      duration: 1500,
+      duration: 1200,
       iterations: 1,
       easing: 'ease-in-out'
     }).finished;  
   
   setLeftAsRight(state);
+
+  rightElement.style.opacity = 0;
+
   await resetButton(state, state.right);
+
+  await new Promise(requestAnimationFrame);
+  
 
     // Animate new button fade-in
   await rightElement.animate([
@@ -192,7 +198,7 @@ async function animateRightOntoLeftElement(state, rightElement, leftElement){
       duration: 500,
       iterations: 1,
   }).finished;
-
+  rightElement.style.opacity = 1;
 }
 
 function setLeftAsRight(state){

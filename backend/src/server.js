@@ -8,14 +8,33 @@ const PORT = process.env.PORT || 3000;
 
 const WORDS_PATH = "../data/word-freqs.json"
 app.use(cors());
+app.use(express.json());
 
-// Load words
-const words = JSON.parse(fs.readFileSync(WORDS_PATH, "utf8"));
+// Load words and dictionary
+const wordsList = JSON.parse(fs.readFileSync(WORDS_PATH, "utf8"));
+let wordsDict = {};
+for (let wordObj of wordsList){
+  wordsDict[wordObj.text] = wordObj.freq;
+}
 
-app.get("/api/wordObj", (req, res) => {
-  let w = words[Math.floor(Math.random() * words.length)];
-  console.log(`Retreived word: ${JSON.stringify(w)}`);
-  res.json(w);
+// Initialize current games dictionary
+let games = {};
+games['0001'] = { best: 0, streak: 0, left: null, right: null}
+
+function pickRandomWordObj(){
+  return wordsList[Math.floor(Math.random() * wordsList.length)];
+}
+
+app.post("/api/word", (req, res) => {
+  const {gameid} = req.body;
+  const game = games[gameid];
+
+  let w = pickRandomWordObj();
+  let word = w.text;
+
+  game.left = game.right;
+  game.right = word;
+  res.send(word);
 });
 
 app.get("/", (req, res) => {
@@ -24,4 +43,34 @@ app.get("/", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server listening (port ${PORT})`);
+});
+
+app.post("/api/guess", (req, res) => {
+  const {gameid, guess} = req.body;
+  const game = games[gameid];
+
+  let isCorrectGuess = scoreGuess(game, guess);
+  updateScore(game, isCorrectGuess);
+
+  res.json(isCorrectGuess);
+});
+function scoreGuess(game, guess){
+  const guessFreq = wordsDict[guess];
+  const leftFreq = wordsDict[game.left];
+  const rightFreq = wordsDict[game.right];
+  return (guessFreq >= leftFreq && guessFreq >= rightFreq);
+}
+function updateScore(game, isCorrectGuess){
+    if (isCorrectGuess){
+    game.streak += 1;
+    game.best = Math.max(game.best, game.streak);
+  } else {
+    game.streak = 0;
+  }
+}
+
+app.get("/api/state", (req, res) => {
+  const gameid = req.query.gameid;
+  console.log(`Game: ${gameid}, ${JSON.stringify(games[gameid])}`);
+  res.json(games[gameid])
 });

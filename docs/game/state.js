@@ -8,6 +8,7 @@ const state = {
   left: null,
   right: null,
   $defButton: null,
+  gameid: null
 };
 
 export async function prepareState(){
@@ -19,10 +20,12 @@ export async function prepareState(){
   state.left.$area = document.getElementById("left-word-area");
   state.right.$area = document.getElementById("right-word-area");
   
-  state.left.addEventListener("click", () => handleGuess(state, state.left.wordObj, state.right.wordObj));
-  state.right.addEventListener("click", () => handleGuess(state, state.right.wordObj, state.left.wordObj));
+  state.left.addEventListener("click", () => handleGuess(state, state.left.word, state.right.word));
+  state.right.addEventListener("click", () => handleGuess(state, state.right.word, state.left.word));
   state.definitionCache = new Map(); // word -> entry
   state.$defButton = document.getElementById("definition-button");
   state.$defButton.addEventListener("click", () => definitionFunc(state));
+  
+  state.gameid = '0001';
   return state;
 }

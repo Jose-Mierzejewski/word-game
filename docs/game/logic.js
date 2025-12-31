@@ -1,4 +1,4 @@
-const SERVERPATH = "http://localhost:3000";
+const SERVERPATH = "https://word-freak.onrender.com";
 
 export async function initialSetup(state){
   await resetButton(state, state.left);

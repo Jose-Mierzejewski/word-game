@@ -1,5 +1,5 @@
 import {updateStateAbsolutes} from "./state.js";
-import {SERVERPATH} from "/docs/main.js";
+import {SERVERPATH} from "../main.js";
 
 
 export async function initialSetup(state){

@@ -5,18 +5,19 @@ export const SERVERPATH = "https://word-freak.onrender.com";
 // export const SERVERPATH = "http://localhost:3000"
 
 let state;
-let gameid;
-let data;
+let storedGameid = localStorage.getItem('gameid');
 
-if (localStorage.getItem('gameid')){
-  gameid = localStorage.getItem('gameid');
-} else {
-  let response = await fetch(SERVERPATH + "/api/newgame", {
-                              method: 'POST'});
-  data = await response.json();
-  gameid = data.gameid;
-  localStorage.setItem('gameid', gameid);
-}
+
+let response = await fetch(SERVERPATH + "/api/entergame", {
+                          method: 'POST',
+                          headers: {'Content-Type': 'application/json'},
+                          body: JSON.stringify({gameid: storedGameid})
+});
+
+const data = await response.json();
+const gameid = data.gameid;
+localStorage.setItem('gameid', gameid);
+
 
 state = await prepareStateElements();
 state.gameid = gameid;

@@ -1,9 +1,11 @@
-const SERVERPATH = "https://word-freak.onrender.com";
-// const SERVERPATH = "http://localhost:3000"
+import {updateStateAbsolutes} from "./state.js";
+import {SERVERPATH} from "/docs/main.js";
+
 
 export async function initialSetup(state){
-  await resetButton(state, state.left);
-  await resetButton(state, state.right);
+  setButton(state.left, state.left.word);
+  setButton(state.right, state.right.word);
+  updateScoreboard(state, true);
 }
 
 async function resetButton(state, button){
@@ -35,7 +37,7 @@ export async function handleGuess(state, guess, other){
                     body: JSON.stringify({ gameid: state.gameid, guess: guess})
   });
 
-  await updateState(state);
+  await updateStateAbsolutes(state);
   updateScoreboard(state);
 
   await animateRightOntoLeftElement(state, state.right.$area, state.left.$area);
@@ -44,11 +46,23 @@ export async function handleGuess(state, guess, other){
 }
 
 
-function updateScoreboard(state){
+function updateScoreboard(state, gameStart = false){
   let $scoreboard = state.$scoreboard;
   let $streak = $scoreboard.querySelector("#streak");
   let $best = $scoreboard.querySelector("#best");
+
+  $streak.querySelector("#streak-num").innerText = state.streak;
+  $best.querySelector("#best-num").innerText = state.best;
   
+  if(!gameStart){
+    feedbackAnimations(state);
+  }
+}
+
+function feedbackAnimations(state){
+  let $scoreboard = state.$scoreboard;
+  let $streak = $scoreboard.querySelector("#streak");
+
   $streak.classList.remove("loss_pop", "gain_pop", "score_shake")
   void $streak.offsetWidth; 
   if (state.streak === 0) {
@@ -57,22 +71,8 @@ function updateScoreboard(state){
     $streak.classList.add("gain_pop")
   }
 
-  $streak.querySelector("#streak-num").innerText = state.streak;
-  $best.querySelector("#best-num").innerText = state.best;
 }
 
-async function updateState(state){
-  const response = await getServerState(state);
-  const data = await response.json();
-  state.streak = data.streak;
-  state.best = data.best;
-  state.left.word = data.left;
-  state.right.word = data.right;
-}
-
-async function getServerState(state){
-  return await fetch(SERVERPATH + `/api/state?gameid=${state.gameid}`);
-}
 
 export async function definitionFunc(state){
   state.defsOpen = !state.defsOpen;

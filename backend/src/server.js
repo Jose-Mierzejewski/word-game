@@ -19,7 +19,6 @@ for (let wordObj of wordsList){
 
 // Initialize current games dictionary
 let games = {};
-games['0001'] = { best: 0, streak: 0, left: null, right: null}
 
 function pickRandomWordObj(){
   return wordsList[Math.floor(Math.random() * wordsList.length)];
@@ -34,6 +33,8 @@ app.post("/api/word", (req, res) => {
 
   game.left = game.right;
   game.right = word;
+
+  console.log(`Updated Game state: ${JSON.stringify(games[gameid])}`);
   res.send(word);
 });
 
@@ -51,7 +52,7 @@ app.post("/api/guess", (req, res) => {
 
   let isCorrectGuess = scoreGuess(game, guess);
   updateScore(game, isCorrectGuess);
-
+  console.log("Guess");
   res.json(isCorrectGuess);
 });
 function scoreGuess(game, guess){
@@ -71,6 +72,13 @@ function updateScore(game, isCorrectGuess){
 
 app.get("/api/state", (req, res) => {
   const gameid = req.query.gameid;
-  console.log(`Game: ${gameid}, ${JSON.stringify(games[gameid])}`);
+  console.log(`State: ${gameid}, ${JSON.stringify(games[gameid])}`);
   res.json(games[gameid])
+});
+
+app.post("/api/newgame", (req, res) => {
+  const gameid = Math.random().toString(36).substring(2, 10); 
+  games[gameid] = { gameid: gameid, best: 0, streak: 0, left: pickRandomWordObj().text, right: pickRandomWordObj().text}
+  console.log(`New Game: ${JSON.stringify(games[gameid])}`);
+  res.json(games[gameid]);
 });

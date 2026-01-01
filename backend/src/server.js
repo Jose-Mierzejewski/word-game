@@ -52,7 +52,6 @@ app.post("/api/guess", (req, res) => {
 
   let isCorrectGuess = scoreGuess(game, guess);
   updateScore(game, isCorrectGuess);
-  console.log("Guess");
   res.json(isCorrectGuess);
 });
 function scoreGuess(game, guess){
@@ -72,13 +71,24 @@ function updateScore(game, isCorrectGuess){
 
 app.get("/api/state", (req, res) => {
   const gameid = req.query.gameid;
-  console.log(`State: ${gameid}, ${JSON.stringify(games[gameid])}`);
-  res.json(games[gameid])
+  const game = games[gameid];
+  console.log(`State: ${gameid}, ${JSON.stringify(game)}`);
+  res.json(game)
 });
 
-app.post("/api/newgame", (req, res) => {
-  const gameid = Math.random().toString(36).substring(2, 10); 
-  games[gameid] = { gameid: gameid, best: 0, streak: 0, left: pickRandomWordObj().text, right: pickRandomWordObj().text}
-  console.log(`New Game: ${JSON.stringify(games[gameid])}`);
-  res.json(games[gameid]);
+app.post("/api/entergame", (req, res) => {
+  let {gameid} = req.body;
+  let game;
+
+  if (gameid === undefined || !(gameid in games)){
+    //NEW GAME
+    gameid = Math.random().toString(36).substring(2, 10); 
+    game = { gameid: gameid, best: 0, streak: 0, left: pickRandomWordObj().text, right: pickRandomWordObj().text}
+    games[gameid] = game; 
+    console.log(`New Game: ${JSON.stringify(game)}`);
+  } else {
+    game = games[gameid];
+    console.log(`Returning to game: ${JSON.stringify(game)}`)
+  }
+  res.json(game);
 });
